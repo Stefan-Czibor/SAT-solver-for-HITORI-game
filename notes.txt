@@ -15,6 +15,13 @@ formula can have it as it's representation.
 Rules in CNF:
 ~ ... negation = white node
 
+    1) Want to avoid having the same number as white multiple times in a row or column.
+    Each number can occur as white at most once in each row and column. If there are
+    k occurrences then k-1 must be black
+
+    Bad: p1 AND p2 where p1 and p2 are white and on the same axis
+    Good: ~(p1 AND p2) = ~p1 OR ~p2
+
     2)  Want to avoid: (~p1 AND ~p2) where p1 and p2 are neighbours.
         To avoid it we negate it and make it a rule:
         ~(~p1 AND ~p2) = p1 OR p2
