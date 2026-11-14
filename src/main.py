@@ -85,4 +85,9 @@ if __name__ == "__main__":
 
     # the input grid that we read from the file
     grid, grid_size = load_instance(arguments.input)
-    print(grid)
+
+    cnf = encode(grid_size, grid)
+
+    print(len(cnf), "clause")
+    for x in cnf:
+        print(x)
