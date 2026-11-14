@@ -1,3 +1,5 @@
+from argparse import ArgumentParser
+
 def load_instance(file_name):
     grid = []   # 2D matrix to store the table
 
@@ -14,5 +16,19 @@ def load_instance(file_name):
         return grid
 
 if __name__ == "__main__":
-    grid = load_instance("instances/input-1.in")
+
+    parser = ArgumentParser()
+
+    parser.add_argument(
+        "-i",
+        "--input",
+        default="instances/input-1.in",
+        type=str,
+        help="The instance file."
+    )
+
+    arguments = parser.parse_args()
+
+    # the input grid that we read from the file
+    grid = load_instance(arguments.input)
     print(grid)
