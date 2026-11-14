@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+import subprocess
 
 def load_instance(file_name):
     grid = []   # 2D matrix to store the table
@@ -71,6 +72,23 @@ def occurrence_rule(grid_size, instance):
                     occurrence_cnf.append([-assign_ID2pos(grid_size, i, j), -assign_ID2pos(grid_size, k, j), 0])
 
     return occurrence_cnf
+
+def call_solver(cnf, output_name, variable_quantity, clause_quantity, solver_name, verbosity):
+    # prints CNF into formula.cnf file then calls the glucose solver on it
+
+    with open(output_name, 'w') as file:
+        file.write("p cnf ", str(variable_quantity), str(clause_quantity) + "\n")
+        for clause in cnf:
+            file.write(" ".join(map(str, clause)) + "\n")
+
+    # ./solver_name         ... we gonna use the glucose-syrup
+    # -model                ... prints out at the an actual working model
+    # -verb                 ... the verbosity of the SAT solver {0, 1, 2}
+    # output_name           ... name of the .cnf file that we give to the solver
+    # stdout=subprocess.PIE ... saves the output so we can process it later
+    return subprocess.run(["./" + solver_name, "model", "-verb=", str(verbosity), output_name], stdout=subprocess.PIPE)
+
+        
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
