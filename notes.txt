@@ -1,0 +1,13 @@
+The purpose of this file is for me to remember key concepts in my project.
+
+The rules of the game:
+    - no row or column can have more than 1 occurrance of a number
+    - black nodes can't be adjacent horizontally or vertically
+    - black nodes can be adjacent diagonally
+    - the graph where the vertices are the remaining white nodes must be connected
+
+In dinamics CNF each atomic formula is represented as an integer. The atomic 
+formula's negation is it's negative value. Each clause ends with a 0 => no atomic 
+formula can have it as it's representation.
+    => I will have to represent the nodes as non-zero integers.
+    ... I decide that if a node is black than it has a negative value
