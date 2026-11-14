@@ -13,7 +13,13 @@ def load_instance(file_name):
             line = list(map(int, file.readline().split()))
             grid.append(line)
 
-        return grid
+        return grid, GRID_SIZE
+
+def encode(instance):
+    pass
+
+def assign_ID2pos(grid_size, row_idx, col_idx):
+    return grid_size * row_idx + col_idx + 1
 
 if __name__ == "__main__":
 
@@ -30,5 +36,5 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
 
     # the input grid that we read from the file
-    grid = load_instance(arguments.input)
+    grid, GRID_SIZE = load_instance(arguments.input)
     print(grid)
