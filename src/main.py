@@ -7,13 +7,13 @@ def load_instance(file_name):
         first_line = list(map(int, file.readline().split()))
         grid.append(first_line)
         # based on the quantity of the numbers in the first line we know how many more are coming
-        GRID_SIZE = len(first_line)
+        grid_size = len(first_line)
 
-        for _ in range(GRID_SIZE - 1):      # read the remaining rows of the table
+        for _ in range(grid_size - 1):      # read the remaining rows of the table
             line = list(map(int, file.readline().split()))
             grid.append(line)
 
-        return grid, GRID_SIZE
+        return grid, grid_size
 
 def encode(grid_size):
     cnf = []
@@ -41,6 +41,7 @@ def neighbour_rule(grid_size):
 
     return neighbour_cnf
 
+
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
 
@@ -59,5 +60,5 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
 
     # the input grid that we read from the file
-    grid, GRID_SIZE = load_instance(arguments.input)
+    grid, grid_size = load_instance(arguments.input)
     print(grid)
