@@ -21,6 +21,7 @@ def encode(grid_size, instance):
     cnf.append(neighbour_rule(grid_size))
     cnf.append(occurrence_rule(grid_size, instance))
 
+
     return cnf
 
 def neighbour_rule(grid_size):
@@ -41,6 +42,11 @@ def neighbour_rule(grid_size):
                 neighbour_cnf.append([assign_ID2pos(grid_size, i, j), assign_ID2pos(grid_size, i, j+1), 0])
 
     return neighbour_cnf
+
+# TODO: 
+def continued_graph_rule():
+    continued_graph_cnf = []
+    return continued_graph_cnf
 
 def occurrence_rule(grid_size, instance):
     # Rule: no row or column can have more than 1 white occurrence of a number
@@ -88,6 +94,6 @@ if __name__ == "__main__":
 
     cnf = encode(grid_size, grid)
 
-    print(len(cnf), "clause")
-    for x in cnf:
-        print(x)
+    # print(len(cnf), "clause")
+    # for x in cnf:
+    #     print(x)
