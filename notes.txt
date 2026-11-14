@@ -19,7 +19,7 @@ Rules in CNF:
     Each number can occur as white at most once in each row and column. If there are
     k occurrences then k-1 must be black
 
-    Bad: p1 AND p2 where p1 and p2 are white and on the same axis
+    Bad: p1 AND p2 where p1 and p2 are white and the same number and on the same axis
     Good: ~(p1 AND p2) = ~p1 OR ~p2
 
     2)  Want to avoid: (~p1 AND ~p2) where p1 and p2 are neighbours.

@@ -15,10 +15,11 @@ def load_instance(file_name):
 
         return grid, grid_size
 
-def encode(grid_size):
+def encode(grid_size, instance):
     cnf = []
 
     cnf.append(neighbour_rule(grid_size))
+    cnf.append(occurrence_rule(grid_size, instance))
 
     return cnf
 
@@ -41,6 +42,29 @@ def neighbour_rule(grid_size):
 
     return neighbour_cnf
 
+def occurrence_rule(grid_size, instance):
+    # Rule: no row or column can have more than 1 white occurrence of a number
+    # There is at most one white occurrence of a number on all axises
+
+    occurrence_cnf = []
+
+    # Check the row
+    for i in range(grid_size):
+        for j in range(grid_size):
+            # now for each element we have to check the other ones in the row
+            for k in range(grid_size):            
+                if j != k and instance[i][j] == instance[i][k]:
+                    occurrence_cnf.append([-assign_ID2pos(grid_size, i, j), -assign_ID2pos(grid_size, i, k), 0])
+
+    # Check the column
+    for i in range(grid_size):
+        for j in range(grid_size):
+            # now for each element we have to check the other ones in the column
+            for k in range(grid_size):            
+                if i != k and instance[i][j] == instance[k][j]:
+                    occurrence_cnf.append([-assign_ID2pos(grid_size, i, j), -assign_ID2pos(grid_size, k, j), 0])
+
+    return occurrence_cnf
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
