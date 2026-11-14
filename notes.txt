@@ -11,3 +11,10 @@ formula's negation is it's negative value. Each clause ends with a 0 => no atomi
 formula can have it as it's representation.
     => I will have to represent the nodes as non-zero integers.
     ... I decide that if a node is black than it has a negative value
+
+Rules in CNF:
+~ ... negation = white node
+
+    2)  Want to avoid: (~p1 AND ~p2) where p1 and p2 are neighbours.
+        To avoid it we negate it and make it a rule:
+        ~(~p1 AND ~p2) = p1 OR p2
