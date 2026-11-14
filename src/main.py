@@ -15,8 +15,31 @@ def load_instance(file_name):
 
         return grid, GRID_SIZE
 
-def encode(instance):
-    pass
+def encode(grid_size):
+    cnf = []
+
+    cnf.append(neighbour_rule(grid_size))
+
+    return cnf
+
+def neighbour_rule(grid_size):
+    # Rule: black cells can't be vertically nor horizantally adjacent
+
+    neighbour_cnf = []
+
+    for i in range(grid_size):
+        for j in range(grid_size):
+
+            # Check if they are in range
+            if (i + 1 < grid_size):
+                # Horizontal neighbour
+                neighbour_cnf.append([assign_ID2pos(grid_size, i, j), assign_ID2pos(grid_size, i+1, j), 0])
+
+            if (j + 1 < grid_size):
+                # Vertical neighbour
+                neighbour_cnf.append([assign_ID2pos(grid_size, i, j), assign_ID2pos(grid_size, i, j+1), 0])
+
+    return neighbour_cnf
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
