@@ -1,7 +1,7 @@
 The purpose of this file is for me to remember key concepts in my project.
 
 The rules of the game:
-    - no row or column can have more than 1 occurrance of a number
+    - no row or column can have more than 1 occurrence of a number
     - black nodes can't be adjacent horizontally or vertically
     - black nodes can be adjacent diagonally
     - the graph where the vertices are the remaining white nodes must be connected
