@@ -107,10 +107,10 @@ def print_result(result):
     print("=========================== HUMAN READABLE FORMAT ===========================")
 
     model = []
-    for line in result.stdout.decode():
+    for line in result.stdout.decode().split("\n"):
         # The line which writes down the model always starts with a "v"
-        if line[0] == "v":
-            variables = line[1:].split(" ")
+        if line[0:2] == "v ":
+            variables = line[2:].split(" ")
             for variable in variables:
                 if variable == "0":
                     continue
