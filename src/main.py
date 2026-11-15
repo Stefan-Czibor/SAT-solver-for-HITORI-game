@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+import subprocess
 
 def load_instance(file_name):
     grid = []   # 2D matrix to store the table
@@ -18,11 +19,19 @@ def load_instance(file_name):
 def encode(grid_size, instance):
     cnf = []
 
-    cnf.append(neighbour_rule(grid_size))
-    cnf.append(occurrence_rule(grid_size, instance))
+    largest_atomic_formula = 0
 
+    for clause in neighbour_rule(grid_size):
+        cnf.append(clause)
 
-    return cnf
+    for clause in occurrence_rule(grid_size, instance):
+        cnf.append(clause)
+
+    for clause in cnf:
+        for literal in clause:
+            largest_atomic_formula = max(largest_atomic_formula, abs(literal))
+
+    return cnf, largest_atomic_formula
 
 def neighbour_rule(grid_size):
     # Rule: black cells can't be vertically nor horizantally adjacent
@@ -72,6 +81,23 @@ def occurrence_rule(grid_size, instance):
 
     return occurrence_cnf
 
+def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name, output_name):
+    # prints CNF into formula.cnf file then calls the glucose solver on it
+
+    with open(output_name, 'w') as file:
+        file.write("p cnf " + str(variable_quantity) + " " + str(clause_quantity) + "\n")
+        for clause in cnf:
+            file.write(" ".join(map(str, clause)) + "\n")
+
+    # ./solver_name         ... we gonna use the glucose-syrup
+    # -model                ... prints out at the an actual working model
+    # -verb                 ... the verbosity of the SAT solver {0, 1, 2}
+    # output_name           ... name of the .cnf file that we give to the solver
+    # stdout=subprocess.PIE ... saves the output so we can process it later
+    return subprocess.run(["./" + solver_name, "-model", "-verb=" + str(verbosity), output_name], stdout=subprocess.PIPE)
+
+        
+
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
 
@@ -87,13 +113,37 @@ if __name__ == "__main__":
         help="The instance file."
     )
 
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="formula.cnf",
+        type=str,
+        help="Output file for the DIMACS format (i.e. the CNF formula)."
+    )
+
+    parser.add_argument(
+        "-s",
+        "--solver",
+        default="glucose-syrup",
+        type=str,
+        help="The SAT solver we are about to use."
+    )
+
+    parser.add_argument(
+        "-v",
+        "--verb",
+        default=1,
+        type=int,
+        help="Verbosity of the SAT solver used."
+    )
+
     arguments = parser.parse_args()
 
     # the input grid that we read from the file
     grid, grid_size = load_instance(arguments.input)
 
-    cnf = encode(grid_size, grid)
+    cnf, literal_count = encode(grid_size, grid)
 
-    # print(len(cnf), "clause")
-    # for x in cnf:
-    #     print(x)
+    result = call_solver(cnf, literal_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
+
+    print(result.stdout.decode())
