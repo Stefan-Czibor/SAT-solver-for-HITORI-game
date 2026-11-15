@@ -105,6 +105,30 @@ if __name__ == "__main__":
         help="The instance file."
     )
 
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="formula.cnf",
+        type=str,
+        help="Output file for the DIMACS format (i.e. the CNF formula)."
+    )
+
+    parser.add_argument(
+        "-s",
+        "--solver",
+        default="glucose-syrup",
+        type=str,
+        help="The SAT solver we are about to use."
+    )
+
+    parser.add_argument(
+        "-v",
+        "--verb",
+        default=1,
+        type=int,
+        help="Verbosity of the SAT solver used."
+    )
+
     arguments = parser.parse_args()
 
     # the input grid that we read from the file
@@ -112,6 +136,6 @@ if __name__ == "__main__":
 
     cnf = encode(grid_size, grid)
 
-    # print(len(cnf), "clause")
-    # for x in cnf:
-    #     print(x)
+    print(len(cnf), "clause")
+    for x in cnf:
+        print(x)
