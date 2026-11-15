@@ -96,9 +96,27 @@ def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name,
     # stdout=subprocess.PIE ... saves the output so we can process it later
     return subprocess.run(["./" + solver_name, "-model", "-verb=" + str(verbosity), output_name], stdout=subprocess.PIPE)
 
+
 def print_result(result):
-    for line in result.decode.split("\n"):
-        print(line)
+    print(result.stdout.decode())
+
+    if result.returncode == 20:
+        print("UNSATISFIABLE")
+        return
+
+    print("=========================== HUMAN READABLE FORMAT ===========================")
+
+    model = []
+    for line in result.stdout.decode():
+        # The line which writes down the model always starts with a "v"
+        if line[0] == "v":
+            variables = line[1:].split(" ")
+            for variable in variables:
+                if variable == "0":
+                    continue
+                model.append(int(variable))
+
+    
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
@@ -147,5 +165,4 @@ if __name__ == "__main__":
     cnf, literal_count = encode(grid_size, grid)
 
     result = call_solver(cnf, literal_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
-
-    print(result.stdout.decode())
+    print_result(result)
