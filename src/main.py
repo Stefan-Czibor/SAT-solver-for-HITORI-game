@@ -52,6 +52,9 @@ def neighbour_rule(grid_size):
 
     return neighbour_cnf
 
+def assign_ID2pos(grid_size, row_idx, col_idx):
+    return grid_size * row_idx + col_idx + 1
+
 # TODO: 
 def continued_graph_rule():
     continued_graph_cnf = []
@@ -96,10 +99,37 @@ def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name,
     # stdout=subprocess.PIE ... saves the output so we can process it later
     return subprocess.run(["./" + solver_name, "-model", "-verb=" + str(verbosity), output_name], stdout=subprocess.PIPE)
 
-        
 
-def assign_ID2pos(grid_size, row_idx, col_idx):
-    return grid_size * row_idx + col_idx + 1
+def print_result(result, grid, grid_size):
+    print(result.stdout.decode())
+
+    if result.returncode == 20:
+        print("UNSATISFIABLE")
+        return
+
+    print("=========================== HUMAN READABLE FORMAT ===========================")
+
+    model = []
+    for line in result.stdout.decode().split("\n"):
+        # The line which writes down the model always starts with a "v"
+        if line[0:2] == "v ":
+            variables = line[2:].split(" ")
+            for variable in variables:
+                if variable == "0":
+                    continue
+                model.append(int(variable))
+
+    # TODO: reformat! Now too ugly
+    index = 0
+    for i in range(grid_size):
+        for j in range(grid_size):
+            print(grid[i][j], end="")
+            if model[index] < 0:
+                print("⬛", end="\t")
+            else:
+                print("⬜", end="\t")
+            index += 1
+        print()
 
 if __name__ == "__main__":
 
@@ -145,5 +175,4 @@ if __name__ == "__main__":
     cnf, literal_count = encode(grid_size, grid)
 
     result = call_solver(cnf, literal_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
-
-    print(result.stdout.decode())
+    print_result(result, grid, grid_size)
