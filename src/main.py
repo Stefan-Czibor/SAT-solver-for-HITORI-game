@@ -19,14 +19,19 @@ def load_instance(file_name):
 def encode(grid_size, instance):
     cnf = []
 
+    largest_atomic_formula = 0
+
     for clause in neighbour_rule(grid_size):
         cnf.append(clause)
 
     for clause in occurrence_rule(grid_size, instance):
         cnf.append(clause)
 
+    for clause in cnf:
+        for literal in clause:
+            largest_atomic_formula = max(largest_atomic_formula, abs(literal))
 
-    return cnf
+    return cnf, largest_atomic_formula
 
 def neighbour_rule(grid_size):
     # Rule: black cells can't be vertically nor horizantally adjacent
@@ -137,9 +142,8 @@ if __name__ == "__main__":
     # the input grid that we read from the file
     grid, grid_size = load_instance(arguments.input)
 
-    cnf = encode(grid_size, grid)
+    cnf, literal_count = encode(grid_size, grid)
 
-    result = call_solver(cnf, grid_size, grid_size*grid_size, arguments.verb, arguments.solver, arguments.output)
+    result = call_solver(cnf, literal_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
 
     print(result.stdout.decode())
-    print("Return code:", result.returncode)
