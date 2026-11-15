@@ -96,7 +96,9 @@ def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name,
     # stdout=subprocess.PIE ... saves the output so we can process it later
     return subprocess.run(["./" + solver_name, "-model", "-verb=" + str(verbosity), output_name], stdout=subprocess.PIPE)
 
-        
+def print_result(result):
+    for line in result.decode.split("\n"):
+        print(line)
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
