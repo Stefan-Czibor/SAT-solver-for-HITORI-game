@@ -19,8 +19,11 @@ def load_instance(file_name):
 def encode(grid_size, instance):
     cnf = []
 
-    cnf.append(neighbour_rule(grid_size))
-    cnf.append(occurrence_rule(grid_size, instance))
+    for clause in neighbour_rule(grid_size):
+        cnf.append(clause)
+
+    for clause in occurrence_rule(grid_size, instance):
+        cnf.append(clause)
 
 
     return cnf
@@ -73,11 +76,11 @@ def occurrence_rule(grid_size, instance):
 
     return occurrence_cnf
 
-def call_solver(cnf, output_name, variable_quantity, clause_quantity, solver_name, verbosity):
+def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name, output_name):
     # prints CNF into formula.cnf file then calls the glucose solver on it
 
     with open(output_name, 'w') as file:
-        file.write("p cnf ", str(variable_quantity), str(clause_quantity) + "\n")
+        file.write("p cnf " + str(variable_quantity) + " " + str(clause_quantity) + "\n")
         for clause in cnf:
             file.write(" ".join(map(str, clause)) + "\n")
 
@@ -86,7 +89,7 @@ def call_solver(cnf, output_name, variable_quantity, clause_quantity, solver_nam
     # -verb                 ... the verbosity of the SAT solver {0, 1, 2}
     # output_name           ... name of the .cnf file that we give to the solver
     # stdout=subprocess.PIE ... saves the output so we can process it later
-    return subprocess.run(["./" + solver_name, "model", "-verb=", str(verbosity), output_name], stdout=subprocess.PIPE)
+    return subprocess.run(["./" + solver_name, "-model", "-verb=" + str(verbosity), output_name], stdout=subprocess.PIPE)
 
         
 
@@ -136,6 +139,7 @@ if __name__ == "__main__":
 
     cnf = encode(grid_size, grid)
 
-    print(len(cnf), "clause")
-    for x in cnf:
-        print(x)
+    result = call_solver(cnf, grid_size, grid_size*grid_size, arguments.verb, arguments.solver, arguments.output)
+
+    print(result.stdout.decode())
+    print("Return code:", result.returncode)
