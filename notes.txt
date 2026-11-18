@@ -64,6 +64,10 @@ Rules in CNF:
                     {(~Level(cell1, 0) OR ~Level(cell2, 0)) AND (~Level(cell1, 0) OR ~Level(cell3, 0)) ... } - for all pair
 
         Sub-rule:   Black cells don't have levels / Only white cells can have levels.
+
+                    Level(cell c, level l) IMPLIES cellx is white ≡ ~Level(cell c, level l) OR cell c is white
+
+
         Sub-rule:   All white cells have a level.
         Sub-rule:   if a node is on level k it must have at least one neighbour 
                     on level k-1.

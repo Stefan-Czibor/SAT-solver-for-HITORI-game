@@ -82,6 +82,14 @@ def continued_graph_rule(grid_size):
             iy, jy = cells[y]
             continued_graph_cnf.append([-assign_ID2level(grid_size, ix, jx, 0), -assign_ID2level(grid_size, iy, jy, 0), 0])
 
+    max_level = grid_size * grid_size -1
+
+    # Sub-rule: Only white cells can be on a level
+    for i, j in cells:
+        for l in range(max_level):
+            cnf.append([-assign_ID2level(grid_size, i, j, l), assign_ID2pos(grid_size, i, j), 0])
+
+
     return continued_graph_cnf
 
 
