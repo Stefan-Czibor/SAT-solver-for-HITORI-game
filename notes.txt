@@ -33,5 +33,10 @@ Rules in CNF:
         To avoid it we negate it and make it a rule:
         ~(~p1 AND ~p2) = p1 OR p2
 
-    3)  want to avoid making white islands. BFS could easily determine if the graph is
-        connected.
+    3)  want to avoid making white islands.
+
+        ⬜️ ⬜️ ⬛   0 1 2
+        ⬛ ⬜️ ⬜️   1 2 3
+        ⬜️ ⬜️ ⬛   2 3 4
+
+        Prof: all cell must be on a level. 
