@@ -49,5 +49,17 @@ Rules in CNF:
         so black cells have to behave like walls.
 
         ⬜️ ⬜️ ⬛    0  1 -2
-        ⬛ ⬜️ ⬜️   -1  2  3
+        ⬛ ⬜️ ⬜️   -1  2  3    GOOD!
         ⬜️ ⬜️ ⬛    4  3 -4
+
+        ⬜️ ⬜️ ⬛    0 1 #
+        ⬛ ⬜️ ⬜️    # 2 3    Better!
+        ⬜️ ⬜️ ⬛    4 3 #
+
+        Sub-rule:   There is exactly one 0-level cell. True if there is at least AND 
+                    at most one 0-level cell.
+        Sub-rule:   Black cells don't have levels / Only white cells can have levels.
+        Sub-rule:   All white cells have a level.
+        Sub-rule:   if a node is on level k it must have at least one neighbour 
+                    on level k-1.
+                    
