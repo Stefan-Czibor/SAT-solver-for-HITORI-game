@@ -39,4 +39,15 @@ Rules in CNF:
         ⬛ ⬜️ ⬜️   1 2 3
         ⬜️ ⬜️ ⬛   2 3 4
 
-        Prof: all cell must be on a level. 
+        Prof: all cell must be on a level. Black cells should be distinguished. Maybe by negative values.
+        
+        ⬜️ ⬜️ ⬛    0  1 -2
+        ⬛ ⬜️ ⬜️   -1  2  3
+        ⬜️ ⬜️ ⬛    2  3 -4
+
+        observation: bottom-left corner can't actually be reached by 2 steps 
+        so black cells have to behave like walls.
+
+        ⬜️ ⬜️ ⬛    0  1 -2
+        ⬛ ⬜️ ⬜️   -1  2  3
+        ⬜️ ⬜️ ⬛    4  3 -4
