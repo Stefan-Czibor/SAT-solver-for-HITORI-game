@@ -16,6 +16,7 @@ def load_instance(file_name):
 
         return grid, grid_size
 
+
 def encode(grid_size, instance):
     cnf = []
 
@@ -32,6 +33,7 @@ def encode(grid_size, instance):
             largest_atomic_formula = max(largest_atomic_formula, abs(literal))
 
     return cnf, largest_atomic_formula
+
 
 def neighbour_rule(grid_size):
     # Rule: black cells can't be vertically nor horizantally adjacent
@@ -52,11 +54,23 @@ def neighbour_rule(grid_size):
 
     return neighbour_cnf
 
+
 # TODO: 
-def continued_graph_rule():
+def continued_graph_rule(grid_size):
     continued_graph_cnf = []
+    cells = []
+
+    for i in range(grid_size):
+        for j in range(grid_size):
+            cells.append((i, j))
+
+    # Sub-rule: At least one cell is on level 0.
+    for i, j in cells:
+        continued_graph_cnf.append([assign_ID2level(grid_size, i, j, 0), 0])
+
 
     return continued_graph_cnf
+
 
 def occurrence_rule(grid_size, instance):
     # Rule: no row or column can have more than 1 white occurrence of a number
@@ -81,6 +95,7 @@ def occurrence_rule(grid_size, instance):
                     occurrence_cnf.append([-assign_ID2pos(grid_size, i, j), -assign_ID2pos(grid_size, k, j), 0])
 
     return occurrence_cnf
+
 
 def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name, output_name):
     # prints CNF into formula.cnf file then calls the glucose solver on it
@@ -107,6 +122,7 @@ def assign_ID2level(grid_size, row_idx, col_idx, level):
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
     return grid_size * row_idx + col_idx + 1
+
 
 if __name__ == "__main__":
 

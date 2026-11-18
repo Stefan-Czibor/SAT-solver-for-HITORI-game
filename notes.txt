@@ -58,6 +58,11 @@ Rules in CNF:
 
         Sub-rule:   There is exactly one 0-level cell. True if there is at least AND 
                     at most one 0-level cell.
+
+                    {Level(cell1, 0) OR Level(cell2, 0) OR ... }
+                    AND
+                    {(~Level(cell1, 0) OR ~Level(cell2, 0)) AND (~Level(cell1, 0) OR ~Level(cell3, 0)) ... } - for all pair
+
         Sub-rule:   Black cells don't have levels / Only white cells can have levels.
         Sub-rule:   All white cells have a level.
         Sub-rule:   if a node is on level k it must have at least one neighbour 
