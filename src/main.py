@@ -64,10 +64,23 @@ def continued_graph_rule(grid_size):
         for j in range(grid_size):
             cells.append((i, j))
 
+    cell_count = len(cells)
+
     # Sub-rule: At least one cell is on level 0.
     for i, j in cells:
         continued_graph_cnf.append([assign_ID2level(grid_size, i, j, 0), 0])
 
+    # Sub-rule: At most one cell is on level 0.
+    # for each (x, y) cell pair ~x OR ~y
+    for x in range(cell_count):
+        for y in range(cell_count):
+
+            if x == y:
+                continue
+
+            ix, jx = cells[x]
+            iy, jy = cells[y]
+            continued_graph_cnf.append([-assign_ID2level(grid_size, ix, jx, 0), -assign_ID2level(grid_size, iy, jy, 0), 0])
 
     return continued_graph_cnf
 
