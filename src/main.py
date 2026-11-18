@@ -93,6 +93,28 @@ def continued_graph_rule(grid_size):
     for i, j in cells:
         for l in range(max_level):
             continued_graph_cnf.append([-assign_ID2pos(grid_size, i, j), assign_ID2level(grid_size, i, j, l), 0])
+    
+
+    # Sub-rule: cell on level l = 1, ..., max_level; has a neighbour on level l-1.
+    for i, j in cells:
+
+        neighbours = []
+        dx = [1, -1, 0, 0]
+        dy = [0, 0, -1, 1]
+    
+        for k in range(len(dx)):
+            new_x = i + dx[k]
+            new_y = j + dy[k]
+
+            if (0 <= new_x < grid_size and 0 <= new_y < grid_size):
+                neighbours.append((new_x, new_y))
+
+        for l in range(1, max_level):
+            clause = [-assign_ID2level(grid_size, i, j, d)]
+            for x, y in neighbours:
+                clause.append(assign_ID2level(grid_size, x, y, l - 1))
+            clause.append(0)
+
 
     return continued_graph_cnf
 

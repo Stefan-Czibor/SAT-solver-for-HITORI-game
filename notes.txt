@@ -73,8 +73,11 @@ Rules in CNF:
                     ≡
                     ~(Cell c is White) OR Level(cell c, level0) OR Level(cell c, level1) OR ...
 
-        Sub-rule:   if a node is on level k it must have at least one neighbour 
-                    on level k-1.
+        Sub-rule:   cell on level l = 1, ..., max_level; has at least one neighbour on level l-1.
+
+                    Level(cell c, level l) IMPLIES Level(cell neighbour1, level l-1) OR Level(cell neighbour2, level l-1) OR ...
+                    ≡
+                    ~Level(cell c, level l) Level(cell neighbour1, level l-1) OR OR Level(cell neighbour2, level l-1) OR ...
         
 Func assign_ID2level:
 
