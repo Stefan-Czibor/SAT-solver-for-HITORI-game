@@ -62,4 +62,11 @@ Rules in CNF:
         Sub-rule:   All white cells have a level.
         Sub-rule:   if a node is on level k it must have at least one neighbour 
                     on level k-1.
-                    
+        
+Func assign_ID2level:
+
+The assign_ID2pos function: cell -> [1, ..., grid_size * grid_size]
+The assign_ID2level function maps each cell with a unique integer. The first 
+grid_size * grid_size integers are already taken which means:
+assign_ID2level: (cell, level) -> [grid_size * grid_size +1, ..., grid_size * grid_size * (|levels| + 1)], where
+|levels| = grid_size * grid_size

@@ -55,6 +55,7 @@ def neighbour_rule(grid_size):
 # TODO: 
 def continued_graph_rule():
     continued_graph_cnf = []
+
     return continued_graph_cnf
 
 def occurrence_rule(grid_size, instance):
@@ -96,6 +97,12 @@ def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name,
     # stdout=subprocess.PIE ... saves the output so we can process it later
     return subprocess.run(["./" + solver_name, "-model", "-verb=" + str(verbosity), output_name], stdout=subprocess.PIPE)
 
+
+# assigns an int ID to each: cell c is on l level
+# It starts on grid_size^2 + 1 as the assign_pos 
+# already took 0, ..., grid_size^2
+def assign_ID2level(grid_size, row_idx, col_idx, level):
+    return assign_ID2pos(grid_size, row_idx, col_idx) + (level + 1) * grid_size * grid_size
         
 
 def assign_ID2pos(grid_size, row_idx, col_idx):
