@@ -33,5 +33,56 @@ Rules in CNF:
         To avoid it we negate it and make it a rule:
         ~(~p1 AND ~p2) = p1 OR p2
 
-    3)  want to avoid making white islands. BFS could easily determine if the graph is
-        connected.
+    3)  want to avoid making white islands.
+
+        ⬜️ ⬜️ ⬛   0 1 2
+        ⬛ ⬜️ ⬜️   1 2 3
+        ⬜️ ⬜️ ⬛   2 3 4
+
+        Prof: all cell must be on a level. Black cells should be distinguished. Maybe by negative values.
+        
+        ⬜️ ⬜️ ⬛    0  1 -2
+        ⬛ ⬜️ ⬜️   -1  2  3
+        ⬜️ ⬜️ ⬛    2  3 -4
+
+        observation: bottom-left corner can't actually be reached by 2 steps 
+        so black cells have to behave like walls.
+
+        ⬜️ ⬜️ ⬛    0  1 -2
+        ⬛ ⬜️ ⬜️   -1  2  3    GOOD!
+        ⬜️ ⬜️ ⬛    4  3 -4
+
+        ⬜️ ⬜️ ⬛    0 1 #
+        ⬛ ⬜️ ⬜️    # 2 3    Better!
+        ⬜️ ⬜️ ⬛    4 3 #
+
+        Sub-rule:   There is exactly one 0-level cell. True if there is at least AND 
+                    at most one 0-level cell.
+
+                    {Level(cell1, 0) OR Level(cell2, 0) OR ... }
+                    AND
+                    {(~Level(cell1, 0) OR ~Level(cell2, 0)) AND (~Level(cell1, 0) OR ~Level(cell3, 0)) ... } - for all pair
+
+        Sub-rule:   Black cells don't have levels ≡ Only white cells can have levels.
+
+                    Level(cell c, level l) IMPLIES cellx is white ≡ ~Level(cell c, level l) OR (cell c is white)
+
+        Sub-rule:   All white cells have a level.
+
+                    (Cell c is white) IMPLIES Level(cell c, level0) OR Level(cell c, level1) OR ...
+                    ≡
+                    ~(Cell c is White) OR Level(cell c, level0) OR Level(cell c, level1) OR ...
+
+        Sub-rule:   cell on level l = 1, ..., max_level; has at least one neighbour on level l-1.
+
+                    Level(cell c, level l) IMPLIES Level(cell neighbour1, level l-1) OR Level(cell neighbour2, level l-1) OR ...
+                    ≡
+                    ~Level(cell c, level l) Level(cell neighbour1, level l-1) OR OR Level(cell neighbour2, level l-1) OR ...
+        
+Func assign_ID2level:
+
+The assign_ID2pos function: cell -> [1, ..., grid_size * grid_size]
+The assign_ID2level function maps each cell with a unique integer. The first 
+grid_size * grid_size integers are already taken which means:
+assign_ID2level: (cell, level) -> [grid_size * grid_size +1, ..., grid_size * grid_size * (|levels| + 1)], where
+|levels| = grid_size * grid_size
