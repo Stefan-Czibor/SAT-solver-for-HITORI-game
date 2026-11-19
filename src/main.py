@@ -64,63 +64,89 @@ def continued_graph_rule(grid_size):
             cells.append((i, j))
 
     cell_count = len(cells)
+    max_level = grid_size * grid_size -1
 
-
-    # Sub-rule: At least one cell is on level 0.
-    min_one_level_0_clause = []
-    for i, j in cells:
-        min_one_level_0_clause.append([assign_ID2level(grid_size, i, j, 0)])
-    min_one_level_0_clause.append(0)
-    continued_graph_cnf.append(min_one_level_0_clause)
+    continued_graph_cnf.extend(at_least_one_on_level_0_sub_rule(cells))
+    continued_graph_cnf.extend(at_most_one_on_level_0_sub_rule(grid_size, cells, cell_count))
     
+    for i, j in cells:
+        continued_graph_cnf.extend(only_white_cells_have_level_sub_rule(grid_size, max_level, i, j))
+        continued_graph_cnf.extend(white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j))
+        continued_graph_cnf.extend(neighbour_sub_rule(grid_size, max_level, i, j))
+
+    return continued_graph_cnf
+
+def neighbour_sub_rule(grid_size, max_level, i, j):
+    # Sub-rule: cell on level l = 1, ..., max_level; has a neighbour on level l-1.
+
+    neighbours = []
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, -1, 1]
+
+    for k in range(len(dx)):
+        new_x = i + dx[k]
+        new_y = j + dy[k]
+
+        if (0 <= new_x < grid_size and 0 <= new_y < grid_size):
+            neighbours.append((new_x, new_y))
+
+    clauses = []
+    for l in range(1, max_level):
+        clause = [-assign_ID2level(grid_size, i, j, l)]
+
+        for x, y in neighbours:
+            clause.append(assign_ID2level(grid_size, x, y, l - 1))
+        clause.append(0)
+
+        clauses.append(clause)
+
+    return clauses
+
+def white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j):
+    # Sub-rule: All white cells have a level
+    clause = [-assign_ID2pos(grid_size, i, j)]
+
+    for l in range(max_level):
+        clause.append(assign_ID2level(grid_size, i, j, l))
+    clause.append(0)
+
+    return [clause]
+
+def only_white_cells_have_level_sub_rule(grid_size, max_level, i, j):
+    # Sub-rule: Only white cells can be on a level
+
+    clauses = []
+    for l in range(max_level):
+        clauses.append([-assign_ID2level(grid_size, i, j, l), assign_ID2pos(grid_size, i, j), 0])
+
+    return clauses
+
+def at_least_one_on_level_0_sub_rule(cells):
+    # Sub-rule: At least one cell is on level 0.
+        clause = []
+        for i, j in cells:
+            clause.append(assign_ID2level(grid_size, i, j, 0))
+        clause.append(0)
+
+        return [clause]
+
+def at_most_one_on_level_0_sub_rule(grid_size, cells, cell_count):
     # Sub-rule: At most one cell is on level 0.
     # for each (x, y) cell pair ~x OR ~y
+
+    clauses = []
+
     for x in range(cell_count):
         for y in range(cell_count):
-
             if x == y:
                 continue
 
             ix, jx = cells[x]
             iy, jy = cells[y]
-            continued_graph_cnf.append([-assign_ID2level(grid_size, ix, jx, 0), -assign_ID2level(grid_size, iy, jy, 0), 0])
+            clauses.append([-assign_ID2level(grid_size, ix, jx, 0), -assign_ID2level(grid_size, iy, jy, 0), 0])
 
-    max_level = grid_size * grid_size -1
-    
-    for i, j in cells:
-        neighbours = []
-        dx = [1, -1, 0, 0]
-        dy = [0, 0, -1, 1]
-    
-        for k in range(len(dx)):
-            new_x = i + dx[k]
-            new_y = j + dy[k]
+    return clauses
 
-            if (0 <= new_x < grid_size and 0 <= new_y < grid_size):
-                neighbours.append((new_x, new_y))
-
-        # Sub-rule: Only white cells can be on a level
-        for l in range(max_level):
-            continued_graph_cnf.append([-assign_ID2level(grid_size, i, j, l), assign_ID2pos(grid_size, i, j), 0])
-
-        # Sub-rule: All white cells have a level
-        white_min_1_clause = [-assign_ID2pos(grid_size, i, j)]
-        for l in range(max_level):
-            white_min_1_clause.append(assign_ID2level(grid_size, i, j, l))
-        white_min_1_clause.append(0)
-        continued_graph_cnf.append(white_min_1_clause)
-
-
-        # Sub-rule: cell on level l = 1, ..., max_level; has a neighbour on level l-1.
-        for l in range(1, max_level):
-            neighbour_clause = [-assign_ID2level(grid_size, i, j, l)]
-            for x, y in neighbours:
-                neighbour_clause.append(assign_ID2level(grid_size, x, y, l - 1))
-            neighbour_clause.append(0)
-            continued_graph_cnf.append(neighbour_clause)
-
-
-    return continued_graph_cnf
 
 
 def occurrence_rule(grid_size, instance):
