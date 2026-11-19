@@ -22,11 +22,9 @@ def encode(grid_size, instance):
 
     largest_atomic_formula = 0
 
-    for clause in neighbour_rule(grid_size):
-        cnf.append(clause)
-
-    for clause in occurrence_rule(grid_size, instance):
-        cnf.append(clause)
+    cnf.extend(neighbour_rule(grid_size))
+    cnf.extend(occurrence_rule(grid_size, instance))
+    cnf.extend(continued_graph_rule(grid_size))
 
     for clause in cnf:
         for literal in clause:
