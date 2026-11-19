@@ -64,7 +64,7 @@ def continued_graph_rule(grid_size):
     cell_count = len(cells)
     max_level = grid_size * grid_size -1
 
-    continued_graph_cnf.extend(at_least_one_on_level_0_sub_rule(cells))
+    continued_graph_cnf.extend(at_least_one_on_level_0_sub_rule(grid_size, cells))
     continued_graph_cnf.extend(at_most_one_on_level_0_sub_rule(grid_size, cells, cell_count))
     
     for i, j in cells:
@@ -72,7 +72,7 @@ def continued_graph_rule(grid_size):
         continued_graph_cnf.extend(white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j))
         continued_graph_cnf.extend(neighbour_sub_rule(grid_size, max_level, i, j))
 
-    return continued_graph_cnf
+    return continued_graph_cnf  
 
 def neighbour_sub_rule(grid_size, max_level, i, j):
     # Sub-rule: cell on level l = 1, ..., max_level; has a neighbour on level l-1.
@@ -89,7 +89,7 @@ def neighbour_sub_rule(grid_size, max_level, i, j):
             neighbours.append((new_x, new_y))
 
     clauses = []
-    for l in range(1, max_level):
+    for l in range(1, max_level + 1):
         clause = [-assign_ID2level(grid_size, i, j, l)]
 
         for x, y in neighbours:
@@ -104,7 +104,7 @@ def white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j):
     # Sub-rule: All white cells have a level
     clause = [-assign_ID2pos(grid_size, i, j)]
 
-    for l in range(max_level):
+    for l in range(max_level + 1):
         clause.append(assign_ID2level(grid_size, i, j, l))
     clause.append(0)
 
@@ -114,12 +114,12 @@ def only_white_cells_have_level_sub_rule(grid_size, max_level, i, j):
     # Sub-rule: Only white cells can be on a level
 
     clauses = []
-    for l in range(max_level):
+    for l in range(max_level + 1):
         clauses.append([-assign_ID2level(grid_size, i, j, l), assign_ID2pos(grid_size, i, j), 0])
 
     return clauses
 
-def at_least_one_on_level_0_sub_rule(cells):
+def at_least_one_on_level_0_sub_rule(grid_size, cells):
     # Sub-rule: At least one cell is on level 0.
         clause = []
         for i, j in cells:
