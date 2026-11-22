@@ -20,17 +20,17 @@ def load_instance(file_name):
 def encode(grid_size, instance):
     cnf = []
 
-    largest_atomic_formula = 0
-
     cnf.extend(neighbour_rule(grid_size))
     cnf.extend(occurrence_rule(grid_size, instance))
     cnf.extend(continued_graph_rule(grid_size))
 
-    for clause in cnf:
-        for literal in clause:
-            largest_atomic_formula = max(largest_atomic_formula, abs(literal))
+    max_level = grid_size * grid_size - 1
 
-    return cnf, largest_atomic_formula
+    # this function at the end of the grid at the highest level gives out the highest ID
+    # which at the same time is the variable count
+    literal_count = assign_ID2level(grid_size, grid_size-1, grid_size-1, max_level)
+
+    return cnf, literal_count
 
 
 def neighbour_rule(grid_size):
@@ -64,12 +64,12 @@ def continued_graph_rule(grid_size):
     cell_count = len(cells)
     max_level = grid_size * grid_size -1
 
-    continued_graph_cnf.extend(at_least_one_on_level_0_sub_rule(grid_size, cells))
+    continued_graph_cnf.append(at_least_one_on_level_0_sub_rule(grid_size, cells))
     continued_graph_cnf.extend(at_most_one_on_level_0_sub_rule(grid_size, cells, cell_count))
     
     for i, j in cells:
         continued_graph_cnf.extend(only_white_cells_have_level_sub_rule(grid_size, max_level, i, j))
-        continued_graph_cnf.extend(white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j))
+        continued_graph_cnf.append(white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j))
         continued_graph_cnf.extend(neighbour_sub_rule(grid_size, max_level, i, j))
 
     return continued_graph_cnf  
@@ -109,7 +109,7 @@ def white_cells_have_min_1_level_sub_rule(grid_size, max_level, i, j):
         clause.append(assign_ID2level(grid_size, i, j, l))
     clause.append(0)
 
-    return [clause]
+    return clause
 
 def only_white_cells_have_level_sub_rule(grid_size, max_level, i, j):
     # Sub-rule: Only white cells can be on a level
@@ -127,7 +127,7 @@ def at_least_one_on_level_0_sub_rule(grid_size, cells):
             clause.append(assign_ID2level(grid_size, i, j, 0))
         clause.append(0)
 
-        return [clause]
+        return clause
 
 def at_most_one_on_level_0_sub_rule(grid_size, cells, cell_count):
     # Sub-rule: At most one cell is on level 0.
