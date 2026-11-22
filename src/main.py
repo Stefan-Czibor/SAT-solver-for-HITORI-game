@@ -213,8 +213,8 @@ def read_model(result):
 
 def print_color_based_result(model, grid_size):
     index = 0
-    for i in range(grid_size):
-        for j in range(grid_size):
+    for _ in range(grid_size):
+        for _ in range(grid_size):
             if model[index] < 0:
                 print("⬛", end="")
             else:
@@ -223,14 +223,12 @@ def print_color_based_result(model, grid_size):
         print()
 
 def print_number_based_result(grid, grid_size, model):
-    index = 0
     for i in range(grid_size):
         for j in range(grid_size):
             if model[assign_ID2pos(grid_size, i, j) - 1] > 0:
                 print(grid[i][j], end=' ')
             else:
                 print('#', end=' ')
-            index += 1
         print()
 
 def print_result(result, grid, grid_size):
@@ -246,11 +244,8 @@ def print_result(result, grid, grid_size):
     model = read_model(result)
 
     print_color_based_result(model, grid_size)
-
     print()
-
     print_number_based_result(grid, grid_size, model)
-
     print()
 
 
