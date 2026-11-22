@@ -52,9 +52,6 @@ def neighbour_rule(grid_size):
 
     return neighbour_cnf
 
-def assign_ID2pos(grid_size, row_idx, col_idx):
-    return grid_size * row_idx + col_idx + 1
-
 
 def continued_graph_rule(grid_size):
     continued_graph_cnf = []
@@ -76,6 +73,7 @@ def continued_graph_rule(grid_size):
         continued_graph_cnf.extend(neighbour_sub_rule(grid_size, max_level, i, j))
 
     return continued_graph_cnf  
+
 
 def neighbour_sub_rule(grid_size, max_level, i, j):
     # Sub-rule: cell on level l = 1, ..., max_level; has a neighbour on level l-1.
@@ -149,7 +147,6 @@ def at_most_one_on_level_0_sub_rule(grid_size, cells, cell_count):
     return clauses
 
 
-
 def occurrence_rule(grid_size, instance):
     # Rule: no row or column can have more than 1 white occurrence of a number
     # There is at most one white occurrence of a number on all axises
@@ -197,15 +194,11 @@ def call_solver(cnf, variable_quantity, clause_quantity, verbosity, solver_name,
 def assign_ID2level(grid_size, row_idx, col_idx, level):
     return assign_ID2pos(grid_size, row_idx, col_idx) + (level + 1) * grid_size * grid_size
 
-def print_result(result, grid, grid_size):
-    print(result.stdout.decode())
+def assign_ID2pos(grid_size, row_idx, col_idx):
+    return grid_size * row_idx + col_idx + 1
 
-    if result.returncode == 20:
-        print("UNSATISFIABLE")
-        return
 
-    print("=========================== HUMAN READABLE FORMAT ===========================")
-
+def read_model(result):
     model = []
     for line in result.stdout.decode().split("\n"):
         # The line which writes down the model always starts with a "v"
@@ -216,17 +209,49 @@ def print_result(result, grid, grid_size):
                     continue
                 model.append(int(variable))
 
-    # TODO: reformat! Now too ugly
+    return model
+
+def print_color_based_result(model, grid_size):
     index = 0
     for i in range(grid_size):
         for j in range(grid_size):
-            print(grid[i][j], end="")
             if model[index] < 0:
-                print("⬛", end="\t")
+                print("⬛", end="")
             else:
-                print("⬜", end="\t")
+                print("⬜", end="")
             index += 1
         print()
+
+def print_number_based_result(grid, grid_size, model):
+    index = 0
+    for i in range(grid_size):
+        for j in range(grid_size):
+            if model[assign_ID2pos(grid_size, i, j) - 1] > 0:
+                print(grid[i][j], end=' ')
+            else:
+                print('#', end=' ')
+            index += 1
+        print()
+
+def print_result(result, grid, grid_size):
+    print(result.stdout.decode())
+
+    if result.returncode == 20:
+        print("UNSATISFIABLE")
+        return
+
+    print("=========================== HUMAN READABLE FORMAT ===========================")
+    print()
+
+    model = read_model(result)
+
+    print_color_based_result(model, grid_size)
+
+    print()
+
+    print_number_based_result(grid, grid_size, model)
+
+    print()
 
 
 if __name__ == "__main__":
@@ -236,7 +261,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-i",
         "--input",
-        default="instances/input-1.in",
+        default="instances/input-6by6.in",
         type=str,
         help="The instance file."
     )
@@ -274,4 +299,4 @@ if __name__ == "__main__":
 
     result = call_solver(cnf, literal_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
 
-    print(result.stdout.decode())
+    print_result(result, grid, grid_size)
