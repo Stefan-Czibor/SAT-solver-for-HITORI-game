@@ -238,8 +238,12 @@ def print_number_based_result(grid, grid_size, model):
                 row.append('#'.rjust(largest_width))
         print(" ".join(row))
 
-def print_result(result, grid, grid_size):
-    print(result.stdout.decode())
+def print_result(result, grid, grid_size, print_variables):
+    for line in result.stdout.decode('utf-8').split('\n'):
+        if line[:2] == 'v ' and not print_variables:
+            continue
+        print(line)
+
 
     if result.returncode == 20:
         print("UNSATISFIABLE")
@@ -292,6 +296,14 @@ if __name__ == "__main__":
         help="Verbosity of the SAT solver used."
     )
 
+    parser.add_argument(
+        "-p",
+        "--print_variables",
+        default=False,
+        type=bool,
+        help="Print variables of the SAT model"
+    )
+
     arguments = parser.parse_args()
 
     # the input grid that we read from the file
@@ -301,4 +313,4 @@ if __name__ == "__main__":
 
     result = call_solver(cnf, variable_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
 
-    print_result(result, grid, grid_size)
+    print_result(result, grid, grid_size, arguments.print_variables)
