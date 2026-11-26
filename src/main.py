@@ -28,9 +28,9 @@ def encode(grid_size, instance):
 
     # this function at the end of the grid at the highest level gives out the highest ID
     # which at the same time is the variable count
-    literal_count = assign_ID2level(grid_size, grid_size-1, grid_size-1, max_level)
-
-    return cnf, literal_count
+    variable_count = assign_ID2level(grid_size, grid_size-1, grid_size-1, max_level)
+    
+    return cnf, variable_count
 
 
 def neighbour_rule(grid_size):
@@ -290,8 +290,8 @@ if __name__ == "__main__":
     # the input grid that we read from the file
     grid, grid_size = load_instance(arguments.input)
 
-    cnf, literal_count = encode(grid_size, grid)
+    cnf, variable_count = encode(grid_size, grid)
 
-    result = call_solver(cnf, literal_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
+    result = call_solver(cnf, variable_count, len(cnf), arguments.verb, arguments.solver, arguments.output)
 
     print_result(result, grid, grid_size)
