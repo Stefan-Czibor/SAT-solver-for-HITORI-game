@@ -239,7 +239,21 @@ def print_number_based_result(grid, grid_size, model):
         print(" ".join(row))
 
 def print_result(result, grid, grid_size):
-    print(result.stdout.decode())
+    if grid_size <= 3:
+        for line in result.stdout.decode('utf-8').split('\n'):
+            print(line)
+
+
+    # anything above 3x3 grid has too many variables. It makes no sense to print out all those variables
+    else:
+        for line in result.stdout.decode('utf-8').split('\n'):
+            if line[:2] != 'v ':
+                print(line)
+            else:
+                print()
+                break
+
+
 
     if result.returncode == 20:
         print("UNSATISFIABLE")
