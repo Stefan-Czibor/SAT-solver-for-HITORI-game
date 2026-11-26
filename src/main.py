@@ -223,13 +223,20 @@ def print_color_based_result(model, grid_size):
         print()
 
 def print_number_based_result(grid, grid_size, model):
+    largest_width = 1
+
+    for row in grid:
+        for x in row:
+            largest_width = max(len(str(x)), largest_width)
+
     for i in range(grid_size):
+        row = []
         for j in range(grid_size):
             if model[assign_ID2pos(grid_size, i, j) - 1] > 0:
-                print(grid[i][j], end=' ')
+                row.append(str(grid[i][j]).rjust(largest_width))
             else:
-                print('#', end=' ')
-        print()
+                row.append('#'.rjust(largest_width))
+        print(" ".join(row))
 
 def print_result(result, grid, grid_size):
     print(result.stdout.decode())
