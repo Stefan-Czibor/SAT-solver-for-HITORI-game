@@ -44,3 +44,21 @@ $\forall i, j, k \in \{1 \dots \}, j \ne k: a_{i, j} = a_{i, k} \implies (\neg W
 
 - **No neighbouring black cells:**
 $\forall (i_1, j_1), (i_2, j_2) \in \{1 \dots n\}^2: |i_1 - i_2| + |j_1 - j_2| = 1 : White(i_1, j_1) \lor White(i_2, j_2)$
+
+- **Connectivity:**
+Exactly one cells is on level zero and every other cell on level $l$ must have a neighbour on level $l-1$. From an arbitrary $white$ cell following the neighbour nodes you can always get to the $0 \ level\  node$
+
+    - At least one cell on level 0:
+    $\bigvee_{c \in C} Level_{c, 0}$
+
+    - At most one cell on level 0:
+    $\forall c, c' \in C, c \ne c':\ Level_{c, 0} \lor Level_{c', 0}$
+
+    - Only white cells can be on a level:
+    $\forall c \in C, \forall \  l \in \{0 \dots max\_level \}: \neg Level_{c, l} \  \lor \ White_c$
+
+    - Every white cell is on at least one level:
+    $\forall c \in C: \ \neg White_c \lor \bigvee_{l=0}^{max\_level} L_{c, l}$
+
+    - Cell on level $l \ge 1$ has a neighbour on level $l-1$:
+    $\forall c, c' \in C, c \ne c', \forall l \in \{0 \dots max\_level\}: \neg Level_{c, l} \lor \bigvee_{c' \in C} Level_{c', l-1}$ 
