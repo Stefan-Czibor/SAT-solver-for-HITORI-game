@@ -36,3 +36,8 @@ The problem is encoded using two sets of variables:
 Each variable is an integer
 - $White(i, j)$ has ID's $1 \dots n^2$
 - $Level(i, j, l)$ has ID's $n^2 + 1 \dots n^2 \cdot(max\_level + 1)$ $\equiv$ $n^2 + 1 \dots n^2 \cdot(n^2 + 1)$
+
+#### Rules
+- **One number in each row and column:**
+$\forall i, j, k \in \{1 \dots \}, j \ne k: a_{i, j} = a_{i, k} \implies (\neg White(i, j) \lor \neg White(i, k))
+\land a_{j, i} = a_{k, i} \implies (\neg White(j, i) \lor \neg White(k, i))$
