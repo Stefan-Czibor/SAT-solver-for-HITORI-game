@@ -26,3 +26,13 @@ One of the valid solutions for the instance above is:
 3 1 #
 ```
 where `#` means that the given cell is blacked out.
+
+### Encoding
+Let $C = \{(i, j) \mid 0 \le i, j < n\}$ be the set of cells in the $n \times n$ grid and the number inside them $a_{i, j}$ the number written in cell $(i, j)$
+The problem is encoded using two sets of variables:
+- $White(i, j)$ means that cell $(i, j)$ is white. If $White(i, j)$ is false the cell is black.
+- $Level(i, j, l)$ represents whether the cell (i, j) is on a level $l$ where $l = 0, ... max\_level$ and $max\_level = n^2 - 1$
+
+Each variable is an integer
+- $White(i, j)$ has ID's $1 \dots n^2$
+- $Level(i, j, l)$ has ID's $n^2 + 1 \dots n^2 \cdot(max\_level + 1)$ $\equiv$ $n^2 + 1 \dots n^2 \cdot(n^2 + 1)$
