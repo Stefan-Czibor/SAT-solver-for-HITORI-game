@@ -41,3 +41,6 @@ Each variable is an integer
 - **One number in each row and column:**
 $\forall i, j, k \in \{1 \dots \}, j \ne k: a_{i, j} = a_{i, k} \implies (\neg White(i, j) \lor \neg White(i, k))
 \land a_{j, i} = a_{k, i} \implies (\neg White(j, i) \lor \neg White(k, i))$
+
+- **No neighbouring black cells:**
+$\forall (i_1, j_1), (i_2, j_2) \in \{1 \dots n\}^2: |i_1 - i_2| + |j_1 - j_2| = 1 : White(i_1, j_1) \lor White(i_2, j_2)$
